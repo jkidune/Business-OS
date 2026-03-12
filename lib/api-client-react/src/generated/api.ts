@@ -17,6 +17,8 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  BulkImportProductsRequest,
+  BulkImportProductsResponse,
   Campaign,
   CampaignWithROI,
   CreateCampaignRequest,
@@ -391,6 +393,93 @@ export const useCreateProduct = <
   TContext
 > => {
   return useMutation(getCreateProductMutationOptions(options));
+};
+
+/**
+ * @summary Bulk import products from CSV
+ */
+export const getBulkImportProductsUrl = () => {
+  return `/api/products/bulk`;
+};
+
+export const bulkImportProducts = async (
+  bulkImportProductsRequest: BulkImportProductsRequest,
+  options?: RequestInit,
+): Promise<BulkImportProductsResponse> => {
+  return customFetch<BulkImportProductsResponse>(getBulkImportProductsUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(bulkImportProductsRequest),
+  });
+};
+
+export const getBulkImportProductsMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof bulkImportProducts>>,
+    TError,
+    { data: BodyType<BulkImportProductsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof bulkImportProducts>>,
+  TError,
+  { data: BodyType<BulkImportProductsRequest> },
+  TContext
+> => {
+  const mutationKey = ["bulkImportProducts"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof bulkImportProducts>>,
+    { data: BodyType<BulkImportProductsRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return bulkImportProducts(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BulkImportProductsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof bulkImportProducts>>
+>;
+export type BulkImportProductsMutationBody =
+  BodyType<BulkImportProductsRequest>;
+export type BulkImportProductsMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Bulk import products from CSV
+ */
+export const useBulkImportProducts = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof bulkImportProducts>>,
+    TError,
+    { data: BodyType<BulkImportProductsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof bulkImportProducts>>,
+  TError,
+  { data: BodyType<BulkImportProductsRequest> },
+  TContext
+> => {
+  return useMutation(getBulkImportProductsMutationOptions(options));
 };
 
 /**

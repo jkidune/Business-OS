@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./bulkImportProductsRequest";
+export * from "./bulkImportProductsResponse";
+export * from "./bulkImportProductsResponseErrorsItem";
 export * from "./campaign";
 export * from "./campaignWithROI";
 export * from "./createCampaignRequest";

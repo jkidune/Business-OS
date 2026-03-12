@@ -154,4 +154,42 @@ router.delete("/products/:sku", async (req, res): Promise<void> => {
   res.json(product);
 });
 
+router.post("/products/bulk", async (req, res): Promise<void> => {
+  const { products: rows } = req.body as { products: unknown[] };
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    res.status(400).json({ error: "validation_error", message: "No products provided" });
+    return;
+  }
+
+  const imported: (typeof productsTable.$inferSelect & { currentStock: number; averageLandedCost: number; profitMarginPercent: number })[] = [];
+  const errors: { row: number; sku?: string; reason: string }[] = [];
+  let skipped = 0;
+
+  for (let i = 0; i < rows.length; i++) {
+    const parsed = CreateProductBody.safeParse(rows[i]);
+    if (!parsed.success) {
+      errors.push({ row: i + 2, reason: parsed.error.issues[0]?.message ?? "Invalid row" });
+      continue;
+    }
+
+    const existing = await db.select().from(productsTable).where(eq(productsTable.sku, parsed.data.sku)).limit(1);
+    if (existing[0]) {
+      skipped++;
+      errors.push({ row: i + 2, sku: parsed.data.sku, reason: "SKU already exists — skipped" });
+      continue;
+    }
+
+    try {
+      await db.insert(productsTable).values(parsed.data);
+      const withStats = await getProductWithStats(parsed.data.sku);
+      if (withStats) imported.push(withStats);
+    } catch (e: any) {
+      errors.push({ row: i + 2, sku: parsed.data.sku, reason: e.message ?? "Insert failed" });
+    }
+  }
+
+  res.json({ imported: imported.length, skipped, errors, products: imported });
+});
+
 export default router;

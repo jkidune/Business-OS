@@ -90,6 +90,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/Product"
 
+  /products/bulk:
+    post:
+      operationId: bulkImportProducts
+      tags: [products]
+      summary: Bulk import products from CSV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkImportProductsRequest"
+      responses:
+        "200":
+          description: Import results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkImportProductsResponse"
+
   /products/{sku}:
     get:
       operationId: getProduct
@@ -450,6 +469,47 @@ components:
         - profitMarginPercent
         - isActive
         - createdAt
+
+    BulkImportProductsRequest:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateProductRequest"
+      required:
+        - products
+
+    BulkImportProductsResponse:
+      type: object
+      properties:
+        imported:
+          type: integer
+        skipped:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              sku:
+                type: string
+              reason:
+                type: string
+            required:
+              - row
+              - reason
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+      required:
+        - imported
+        - skipped
+        - errors
+        - products
 
     CreateProductRequest:
       type: object

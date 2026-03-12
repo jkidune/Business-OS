@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { Shell } from "@/components/layout/Shell";
+import Landing from "@/pages/Landing";
 
 // Pages
 import Dashboard from "@/pages/Dashboard";
@@ -24,17 +25,22 @@ const queryClient = new QueryClient({
 
 function Router() {
   return (
-    <Shell>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/pos" component={POS} />
-        <Route path="/products" component={Products} />
-        <Route path="/purchases" component={Purchases} />
-        <Route path="/campaigns" component={Campaigns} />
-        <Route path="/campaigns/:id" component={CampaignDetail} />
-        <Route component={NotFound} />
-      </Switch>
-    </Shell>
+    <Switch>
+      <Route path="/landing" component={Landing} />
+      <Route>
+        <Shell>
+          <Switch>
+            <Route path="/" component={Dashboard} />
+            <Route path="/pos" component={POS} />
+            <Route path="/products" component={Products} />
+            <Route path="/purchases" component={Purchases} />
+            <Route path="/campaigns" component={Campaigns} />
+            <Route path="/campaigns/:id" component={CampaignDetail} />
+            <Route component={NotFound} />
+          </Switch>
+        </Shell>
+      </Route>
+    </Switch>
   );
 }
 

@@ -71,6 +71,23 @@ export interface CreateProductRequest {
   reorderThreshold: number;
 }
 
+export interface BulkImportProductsRequest {
+  products: CreateProductRequest[];
+}
+
+export type BulkImportProductsResponseErrorsItem = {
+  row: number;
+  sku?: string;
+  reason: string;
+};
+
+export interface BulkImportProductsResponse {
+  imported: number;
+  skipped: number;
+  errors: BulkImportProductsResponseErrorsItem[];
+  products: Product[];
+}
+
 export interface UpdateProductRequest {
   name?: string;
   category?: string;

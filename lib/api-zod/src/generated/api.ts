@@ -89,6 +89,55 @@ export const CreateProductBody = zod.object({
 });
 
 /**
+ * @summary Bulk import products from CSV
+ */
+export const BulkImportProductsBody = zod.object({
+  products: zod.array(
+    zod.object({
+      sku: zod.string(),
+      name: zod.string(),
+      category: zod.string(),
+      baseUnitName: zod.string(),
+      sellingPrice: zod
+        .number()
+        .describe("Selling price in cents (TZS \* 100)"),
+      reorderThreshold: zod.number(),
+    }),
+  ),
+});
+
+export const BulkImportProductsResponse = zod.object({
+  imported: zod.number(),
+  skipped: zod.number(),
+  errors: zod.array(
+    zod.object({
+      row: zod.number(),
+      sku: zod.string().optional(),
+      reason: zod.string(),
+    }),
+  ),
+  products: zod.array(
+    zod.object({
+      sku: zod.string(),
+      name: zod.string(),
+      category: zod.string(),
+      baseUnitName: zod.string(),
+      sellingPrice: zod
+        .number()
+        .describe("Selling price in cents (TZS \* 100)"),
+      currentStock: zod.number(),
+      reorderThreshold: zod.number(),
+      averageLandedCost: zod
+        .number()
+        .describe("Weighted average landed cost in cents"),
+      profitMarginPercent: zod.number().describe("Profit margin percentage"),
+      isActive: zod.boolean(),
+      createdAt: zod.date(),
+    }),
+  ),
+});
+
+/**
  * @summary Get product by SKU
  */
 export const GetProductParams = zod.object({
