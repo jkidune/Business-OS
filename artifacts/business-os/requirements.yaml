@@ -1,0 +1,18 @@
+packages:
+  "recharts": "Dashboard analytics charts and data visualization"
+  "date-fns": "Human-readable date formatting"
+  "react-hook-form": "Form state management"
+  "@hookform/resolvers": "Zod validation with react-hook-form"
+  "framer-motion": "Animations and page transitions"
+  "clsx": "Utility for constructing className strings"
+  "tailwind-merge": "Utility to merge tailwind classes"
+
+images:
+  - path: "artifacts/business-os/public/images/logo-icon.png"
+    description: "Minimalist elegant geometric rose flower icon in dark ruby and rose gold colors, on transparent background, luxury beauty aesthetic"
+    aspect_ratio: "1:1"
+
+notes:
+  - Using generated Orval hooks from @workspace/api-client-react
+  - Currency is stored in cents, converting locally for display (TZS)
+  - Dark mode first design, forcing .dark class on main wrapper

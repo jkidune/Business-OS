@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "BusinessOS"
+version = "1.0.0"
+id = "artifacts/business-os"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 23821
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/business-os run dev"
+
+[services.env]
+PORT = "23821"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/business-os", "run", "build"]
+publicDir = "artifacts/business-os/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
